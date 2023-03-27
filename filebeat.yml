@@ -1,0 +1,25 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      # - "/var/log/*.log"
+      - "/var/log/app/*.log"
+
+output.elasticsearch:
+  hosts: ["http://docker-elasticsearch:9200"]
+  index: "app-logs"
+
+logging.json: true
+logging.metrics.enabled: false
+logging:
+  files:
+    rotateeverybytes: 10485760
+
+processors:
+  - decode_json_fields:
+      fields: ["message"]
+      target: "json"
+      overwrite_keys: true
+
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat"
