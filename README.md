@@ -1,21 +1,18 @@
 # Intro
-The goal of the project is to provide the most straightforfard way to connect & configure
-EFK (Elasticsearch, Filebeat, Kibana) stack to easily parse logs of your apps.
-Before we go to the installation & usage details, it's worth mentioning that the
-following versions of EFK-stack are used in this project:
+The goal of the project is to provide the most straightforfard way to connect & configure EFK (Elasticsearch, Filebeat, Kibana) stack to easily parse logs of your apps.
+Before we go to the installation & usage details, it's worth mentioning that the following versions of EFK-stack are used in this project:
   - Elasticsearch 6.6.0
   - Filebeat 6.6.0
   - Kibana 6.6.0
 
 
 # Installation
-Besides **Docker**, **Docker-compose** is also *required* to configure & run the services.
-**Python** is *optional*. It's only used to generate logs to be parsed by simply running the [script](logs_generator.py).
-But don't forget to setup integration with [ecs-logging](https://www.elastic.co/guide/en/ecs-logging/python/current/installation.html).
+Besides **Docker**, **Docker-compose** is also *required* to configure & run the services. **Python** is *optional*. It's only used to generate logs to be parsed by simply running the [script](logs_generator.py). But don't forget to setup integration with [ecs-logging](https://www.elastic.co/guide/en/ecs-logging/python/current/installation.html).
+
 
 ## System Requirements
 
-**Note**: other versions are also allowed, though ones below were using during development of the project. Feel free to adjust & test it in your environments carefully.
+**Note**: other versions are also allowed, though ones below were using during development of the project. Feel free to adjust & test it in your environment carefully.
 
  - Docker: 20.10.12
  - Docker-Compose: 1.29.2
@@ -23,7 +20,7 @@ But don't forget to setup integration with [ecs-logging](https://www.elastic.co/
 
 # Usage
 
-Once the environment is prepared, we run EFK-services like this: `docker-compose up`. If you don't care about output, append `-d` flag to the `docker-compose` instruction. A common way to check if Filebeat & Elasticsearch are connected is to run the following command:
+Once the environment is prepared, we're going to run EFK-services like this: `docker-compose up`. If you don't care about output, append `-d` flag to the `docker-compose` instruction. A common way to check if Filebeat & Elasticsearch are connected is to run the following command:
 
 ```
 docker exec -it docker-filebeat curl http://docker-elasticsearch:9200
@@ -58,29 +55,36 @@ then everything's OK. Alternatively, there's an option to check status of the co
 docker inspect docker-elasticsearch -f '{{ .State.Health.Status }}'
 ```
 
-The expected output must be **healthy**.
-In other scenarios, please check the output of the docker-services for more details.
+The expected output must be **healthy**. In other scenarios, please check the output of the docker-services for more details.
 
 Before we start working with [Kibana](http://localhost:5601), you can execute the [script](logs_generator.py) to be running on the background, so you will have sample logs to play with.
 
 
 ## Kibana. Index Pattern & Logs Visualization
-Kibana requires an index pattern to access the Elasticsearch data. An index pattern selects the data to use & allows you to define properties of the fields. For example, an index pattern can point to your log data from yesterday, or all indices that contain your data. So let's create an index pattern & start creating our first diagram step by step:
+Kibana requires an index pattern to access the Elasticsearch data. An index pattern selects the data to use & allows to define properties of the fields. For example, an index pattern can point to log data from yesterday, or all indices that contain data. So let's create an index pattern & visulize our logs step by step.
 
-#### Step 1. Create an Index Pattern
-...
+### Step 1. Create an Index Pattern
+Open [Kibana](http://localhost:5601) in a web browser, go to **Discover** section & select the name of the index that we specified in [filebeat.yml](filebeat.yml). Then create an *Index Pattern* for this index:
 
-#### Step 2. Initialize the First Diagram
-...
+[![Step1.png](https://i.postimg.cc/ZnM1KGJj/Step1.png)](https://postimg.cc/D41CxYJb)
 
-#### Step 3. Customize the Diagram
-...
+### Step 2. Create the First Diagram
+Similarly to the previous step, switch back to the sidebar, then go to **Dashboard** section & *Create new dashboard* of a preferred type. As an example we're going to create a Vertical Bar diagram to visualize the number of entries in the log files of each particular level accordingly: *info*, *warning*, *error*, *critical*.
 
-#### Step 4. View & Save the Diagram
-...
+[![Step2.png](https://i.postimg.cc/MHh7d5Wd/Step2.png)](https://postimg.cc/QKJKMpKT)
 
 
+### Step 3. Customize the Diagram
+Once Filebeat successfully loaded data from the log files into the index & we created an <strike>unattractive</strike> prororype of a Vetical Bar, we need
+to customize it a little bit in order to display a representable diagram. 
 
+[![Step3.png](https://i.postimg.cc/L8XrwBM2/Step3.png)](https://postimg.cc/7fFsTz6W)
+
+
+### Step 4. View & Save the Diagram
+Last things last we need to save what we've done so far. Move your cursor to the top of the page & click **Save**. Provide a preferred name & that's pretty much it. Now you can continue customizing the diagram or create a new one. 
+
+[![Step4.png](https://i.postimg.cc/W3y1Qbd1/Step4.png)](https://postimg.cc/9RG292P6)
 
 
 # Conclusion
